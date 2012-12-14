@@ -1,0 +1,22 @@
+缓冲区，一个特定基本类型的数据容器。缓冲区有3个属性：
+    容量 —— 其包含的元素个数
+    限制边界 —— 首个不能被读写的元素所在的索引值
+    当前位置 —— 可被读写的下一个元素的索引值
+
+
+package java.nio;
+
+/**
+ * @author Mark Reinhold
+ * @author JSR-51 Expert Group
+ * @since 1.4
+ */
+public abstract class Buffer {
+
+    // Invariants: mark <= position <= limit <= capacity
+    private int mark = -1;
+    private int position = 0; // 当前位置（默认，数组起始索引）
+    private int limit; // 限制边界
+    private int capacity; // 容量
+    ……
+}
