@@ -1,0 +1,47 @@
+﻿字节缓冲区
+
+这个类定义了6种类别操作：
+    ·get与put：读/写单个字节
+    ·bulk get：读取缓冲区的若干个连续字节到一个字节数组
+    ·bulk put：写入一个字节数组的若干个连续字节到缓冲区
+
+Direct vs. non-direct buffers
+    ·HeapByteBuffer，维护一份byte[]在JVM堆上，拷贝到临时Direct ByteBuffer，但临时缓冲区使用缓存。
+    ·DirectByteBuffer，其底层存储在非JVM堆(Native heap)上，通过native代码执行I/O操作，无需临时缓冲区做拷贝。
+    ByteBuffer的选择 p19 -> Java NIO trick and trap http://www.blogjava.net/killme2008/archive/2010/11/22/338420.html
+
+
+/**
+ * @author Mark Reinhold
+ * @author JSR-51 Expert Group
+ * @since 1.4
+ */
+
+public abstract class ByteBuffer
+    extends Buffer
+    implements Comparable<ByteBuffer>
+{
+    // These fields are declared here rather than in Heap-X-Buffer in order to
+    // reduce the number of virtual method invocations needed to access these
+    // values, which is especially costly when coding small buffers.
+    final byte[] hb;			// Non-null only for heap buffers
+    final int offset;
+
+    …
+
+    // 4个static方法来做创建工作
+    ByteBuffer allocate(int capacity) // 创建一个指定capacity的HeapByteBuffer
+    ByteBuffer allocateDirect(int capacity) // 创建一个DirectByteBuffer，这样的ByteBuffer在参与I/O操作时性能会更好
+    ByteBuffer wrap(byte[] array, int offset, int length) // 把一个byte数组或byte数组的一部分包装成ByteBuffer
+    ByteBuffer wrap(byte[] array)
+    
+    // 一系列get和put操作来从中读/写byte数据
+    byte get()
+    byte get(int index)
+    ByteBuffer get(byte[] dst)
+    ByteBuffer put(byte b)
+    ByteBuffer put(int index, byte b)
+    ByteBuffer put(byte[] src)
+
+    …
+}
